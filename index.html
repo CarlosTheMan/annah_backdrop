@@ -5,30 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Motor Control</title>
+  <title>Annah Arias Backdrop</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
+      background: #98ff98;
+      color: #1a1a1a;
       height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
+      gap: 28px;
       padding: 32px;
     }
-    h1 { font-size: 1.4rem; font-weight: 600; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+    }
     #status {
       font-size: 0.85rem;
-      color: #94a3b8;
+      color: #2d6a2d;
       text-align: center;
     }
     #connect {
       padding: 14px 36px;
-      background: #3b82f6;
+      background: #16a34a;
       color: #fff;
       border: none;
       border-radius: 99px;
@@ -36,65 +40,40 @@
       font-weight: 600;
       cursor: pointer;
     }
-    #connect:disabled { background: #334155; color: #64748b; }
+    #connect:disabled { background: #a3c9a3; color: #5a8a5a; }
 
     .controls {
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      width: 100%;
-    }
-    .speed-row {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-    }
-    input[type=range] {
-      width: 100%;
-      accent-color: #3b82f6;
-    }
-    .btns {
-      display: flex;
-      flex-direction: column;
       gap: 14px;
       width: 100%;
     }
     button.cmd {
       width: 100%;
-      padding: 20px;
+      padding: 26px;
       font-size: 1.2rem;
       font-weight: 700;
       border: none;
       border-radius: 16px;
       cursor: pointer;
-      transition: opacity 0.1s;
-      active: opacity 0.7;
     }
-    button.cmd:active { opacity: 0.7; }
-    #fwd { background: #22c55e; color: #fff; }
-    #stp { background: #475569; color: #fff; }
-    #rev { background: #ef4444; color: #fff; }
+    button.cmd:active { opacity: 0.75; }
+    #raise { background: #16a34a; color: #fff; }
+    #stop  { background: #475569; color: #fff; }
+    #lower { background: #dc2626; color: #fff; }
   </style>
 </head>
 <body>
-  <h1>⚙️ Motor Control</h1>
+
+  <h1>Annah Arias Backdrop</h1>
   <div id="status">Not connected</div>
-  <button id="connect">Connect to Pico</button>
+  <button id="connect">Connect</button>
 
   <div class="controls" id="controls">
-    <div class="speed-row">
-      <label>Speed: <strong id="pct">50</strong>%</label>
-      <input type="range" id="speed" min="0" max="100" value="50"
-             oninput="document.getElementById('pct').textContent=this.value">
-    </div>
-    <div class="btns">
-      <button class="cmd" id="fwd" onpointerdown="send(1)">▲ Forward</button>
-      <button class="cmd" id="stp" onpointerdown="send(0)">■ Stop</button>
-      <button class="cmd" id="rev" onpointerdown="send(-1)">▼ Reverse</button>
-    </div>
+    <button class="cmd" id="raise" onpointerdown="send(1)">▲ Raise Backdrop</button>
+    <button class="cmd" id="stop"  onpointerdown="send(0)">■ Stop</button>
+    <button class="cmd" id="lower" onpointerdown="send(-1)">▼ Lower Backdrop</button>
   </div>
 
   <script>
@@ -136,8 +115,7 @@
 
     async function send(dir) {
       if (!characteristic) return;
-      const pct   = document.getElementById("speed").value;
-      const msg   = `${dir},${pct}`;
+      const msg   = `${dir},100`;
       const bytes = new TextEncoder().encode(msg);
       try {
         await characteristic.writeValueWithoutResponse(bytes);
@@ -151,5 +129,6 @@
       document.getElementById("status").textContent = msg;
     }
   </script>
+
 </body>
 </html>
