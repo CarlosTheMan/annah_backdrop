@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Motor Control</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 32px;
+    }
+    h1 { font-size: 1.4rem; font-weight: 600; }
+    #status {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+    #connect {
+      padding: 14px 36px;
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 99px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #connect:disabled { background: #334155; color: #64748b; }
+
+    .controls {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+    .speed-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    input[type=range] {
+      width: 100%;
+      accent-color: #3b82f6;
+    }
+    .btns {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+    button.cmd {
+      width: 100%;
+      padding: 20px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: opacity 0.1s;
+      active: opacity 0.7;
+    }
+    button.cmd:active { opacity: 0.7; }
+    #fwd { background: #22c55e; color: #fff; }
+    #stp { background: #475569; color: #fff; }
+    #rev { background: #ef4444; color: #fff; }
+  </style>
+</head>
+<body>
+  <h1>⚙️ Motor Control</h1>
+  <div id="status">Not connected</div>
+  <button id="connect">Connect to Pico</button>
+
+  <div class="controls" id="controls">
+    <div class="speed-row">
+      <label>Speed: <strong id="pct">50</strong>%</label>
+      <input type="range" id="speed" min="0" max="100" value="50"
+             oninput="document.getElementById('pct').textContent=this.value">
+    </div>
+    <div class="btns">
+      <button class="cmd" id="fwd" onpointerdown="send(1)">▲ Forward</button>
+      <button class="cmd" id="stp" onpointerdown="send(0)">■ Stop</button>
+      <button class="cmd" id="rev" onpointerdown="send(-1)">▼ Reverse</button>
+    </div>
+  </div>
+
+  <script>
+    const SERVICE = "12345678-1234-5678-1234-56789abcdef0";
+    const CHAR    = "12345678-1234-5678-1234-56789abcdef1";
+
+    let characteristic = null;
+
+    document.getElementById("connect").addEventListener("click", async () => {
+      try {
+        setStatus("Scanning...");
+        const device = await navigator.bluetooth.requestDevice({
+          filters: [{ name: "PicoMotor" }],
+          optionalServices: [SERVICE]
+        });
+
+        device.addEventListener("gattserverdisconnected", onDisconnect);
+        setStatus("Connecting...");
+
+        const server  = await device.gatt.connect();
+        const service = await server.getPrimaryService(SERVICE);
+        characteristic = await service.getCharacteristic(CHAR);
+
+        setStatus("Connected ✓");
+        document.getElementById("connect").disabled = true;
+        document.getElementById("controls").style.display = "flex";
+
+      } catch (e) {
+        setStatus("Failed: " + e.message);
+      }
+    });
+
+    function onDisconnect() {
+      characteristic = null;
+      setStatus("Disconnected — tap to reconnect");
+      document.getElementById("connect").disabled = false;
+      document.getElementById("controls").style.display = "none";
+    }
+
+    async function send(dir) {
+      if (!characteristic) return;
+      const pct   = document.getElementById("speed").value;
+      const msg   = `${dir},${pct}`;
+      const bytes = new TextEncoder().encode(msg);
+      try {
+        await characteristic.writeValueWithoutResponse(bytes);
+        setStatus(`Sent: ${msg}`);
+      } catch (e) {
+        setStatus("Send failed: " + e.message);
+      }
+    }
+
+    function setStatus(msg) {
+      document.getElementById("status").textContent = msg;
+    }
+  </script>
+</body>
+</html>
