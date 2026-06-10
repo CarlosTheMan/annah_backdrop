@@ -5,130 +5,197 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Annah Arias Backdrop</title>
+  <title>Annah's Backdrop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, sans-serif;
-      background: #98ff98;
-      color: #1a1a1a;
-      height: 100dvh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f0;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 28px;
-      padding: 32px;
+      padding: 2rem 1.5rem;
+      gap: 2rem;
     }
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      text-align: center;
+    .header { text-align: center; }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a1a;
+      letter-spacing: -0.3px;
     }
-    #status {
-      font-size: 0.85rem;
-      color: #2d6a2d;
-      text-align: center;
+    .header p {
+      font-size: 14px;
+      color: #6b6b6b;
+      margin-top: 4px;
     }
-    #connect {
-      padding: 14px 36px;
-      background: #16a34a;
-      color: #fff;
-      border: none;
-      border-radius: 99px;
-      font-size: 1rem;
-      font-weight: 600;
+    .card {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 360px;
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 0.5px solid rgba(0,0,0,0.08);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      flex-shrink: 0;
+    }
+    .dot.connected { background: #16a34a; }
+    .status-text {
+      font-size: 13px;
+      color: #6b6b6b;
+      flex: 1;
+    }
+    .btn-connect {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      background: #fff;
+      color: #1a1a1a;
       cursor: pointer;
     }
-    #connect:disabled { background: #a3c9a3; color: #5a8a5a; }
-
+    .btn-connect:hover { background: #f5f5f0; }
+    .btn-connect:disabled { opacity: 0.4; cursor: default; }
     .controls {
       display: none;
       flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
+      gap: 10px;
     }
-    button.cmd {
+    .btn-cmd {
       width: 100%;
-      padding: 26px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      border: none;
-      border-radius: 16px;
+      padding: 18px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: -0.1px;
+      transition: opacity 0.1s, transform 0.1s;
     }
-    button.cmd:active { opacity: 0.75; }
-    #raise { background: #16a34a; color: #fff; }
-    #stop  { background: #475569; color: #fff; }
-    #lower { background: #dc2626; color: #fff; }
+    .btn-cmd:active { opacity: 0.75; transform: scale(0.98); }
+    .btn-cmd i { font-size: 18px; }
+    .btn-lower {
+      background: #fff;
+      color: #1a1a1a;
+      border: 0.5px solid rgba(0,0,0,0.12);
+    }
+    .btn-stop {
+      background: #f5f5f0;
+      color: #1a1a1a;
+      border: 0.5px solid rgba(0,0,0,0.08);
+    }
+    .btn-raise {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+    }
+    .last-cmd {
+      font-size: 12px;
+      color: #aaa;
+      text-align: center;
+      margin-top: 0.75rem;
+      min-height: 16px;
+    }
   </style>
 </head>
 <body>
+  <div class="header">
+    <h1>Annah Arias</h1>
+    <p>Backdrop controller</p>
+  </div>
 
-  <h1>Annah Arias Backdrop</h1>
-  <div id="status">Not connected</div>
-  <button id="connect">Connect</button>
+  <div class="card">
+    <div class="status-row">
+      <div class="dot" id="dot"></div>
+      <span class="status-text" id="status">Not connected</span>
+      <button class="btn-connect" id="connect">Connect</button>
+    </div>
 
-  <div class="controls" id="controls">
-    <button class="cmd" id="raise" onpointerdown="send(1)">▲ Raise Backdrop</button>
-    <button class="cmd" id="stop"  onpointerdown="send(0)">■ Stop</button>
-    <button class="cmd" id="lower" onpointerdown="send(-1)">▼ Lower Backdrop</button>
+    <div class="controls" id="controls">
+      <button class="btn-cmd btn-lower" onpointerdown="send(1)">
+        <i class="ti ti-arrow-down"></i> Lower backdrop
+      </button>
+      <button class="btn-cmd btn-stop" onpointerdown="send(0)">
+        <i class="ti ti-player-stop"></i> Stop
+      </button>
+      <button class="btn-cmd btn-raise" onpointerdown="send(-1)">
+        <i class="ti ti-arrow-up"></i> Raise backdrop
+      </button>
+    </div>
+
+    <div class="last-cmd" id="last"></div>
   </div>
 
   <script>
     const SERVICE = "12345678-1234-5678-1234-56789abcdef0";
     const CHAR    = "12345678-1234-5678-1234-56789abcdef1";
-
     let characteristic = null;
 
     document.getElementById("connect").addEventListener("click", async () => {
       try {
-        setStatus("Scanning...");
+        setStatus("Scanning...", false);
         const device = await navigator.bluetooth.requestDevice({
           filters: [{ name: "PicoMotor" }],
           optionalServices: [SERVICE]
         });
-
         device.addEventListener("gattserverdisconnected", onDisconnect);
-        setStatus("Connecting...");
-
+        setStatus("Connecting...", false);
         const server  = await device.gatt.connect();
         const service = await server.getPrimaryService(SERVICE);
         characteristic = await service.getCharacteristic(CHAR);
-
-        setStatus("Connected ✓");
+        setStatus("Connected", true);
         document.getElementById("connect").disabled = true;
         document.getElementById("controls").style.display = "flex";
-
       } catch (e) {
-        setStatus("Failed: " + e.message);
+        setStatus("Failed: " + e.message, false);
       }
     });
 
     function onDisconnect() {
       characteristic = null;
-      setStatus("Disconnected — tap to reconnect");
+      setStatus("Disconnected — tap to reconnect", false);
       document.getElementById("connect").disabled = false;
       document.getElementById("controls").style.display = "none";
+      document.getElementById("last").textContent = "";
     }
 
     async function send(dir) {
       if (!characteristic) return;
+      const labels = { "-1": "Raising", "0": "Stopped", "1": "Lowering" };
       const msg   = `${dir},100`;
       const bytes = new TextEncoder().encode(msg);
       try {
         await characteristic.writeValueWithoutResponse(bytes);
-        setStatus(`Sent: ${msg}`);
+        document.getElementById("last").textContent = labels[dir] + " backdrop";
       } catch (e) {
-        setStatus("Send failed: " + e.message);
+        setStatus("Send failed: " + e.message, false);
       }
     }
 
-    function setStatus(msg) {
+    function setStatus(msg, connected) {
       document.getElementById("status").textContent = msg;
+      document.getElementById("dot").className = "dot" + (connected ? " connected" : "");
     }
   </script>
-
 </body>
 </html>
