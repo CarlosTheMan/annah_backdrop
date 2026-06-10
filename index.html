@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Annah's Backdrop</title>
+  <title>Annah Arias Backdrop</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f0;
+      background: #2e4228;
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
@@ -20,108 +20,76 @@
       padding: 2rem 1.5rem;
       gap: 2rem;
     }
-    .header { text-align: center; }
-    .header h1 {
-      font-size: 22px;
-      font-weight: 500;
-      color: #1a1a1a;
-      letter-spacing: -0.3px;
+    .header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
     }
-    .header p {
-      font-size: 14px;
-      color: #6b6b6b;
-      margin-top: 4px;
+    .header-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 0.5px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
     }
+    .header-icon i { font-size: 24px; color: #f5c518; }
+    .header h1 { font-size: 22px; font-weight: 500; color: #c8d9c0; letter-spacing: -0.3px; }
+    .header-divider { display: flex; align-items: center; gap: 10px; width: 180px; }
+    .header-divider span { flex: 1; height: 0.5px; background: rgba(255,255,255,0.12); }
+    .header-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #6b8f5e; font-weight: 500; }
     .card {
-      background: #fff;
-      border: 0.5px solid rgba(0,0,0,0.12);
-      border-radius: 12px;
+      background: #243620;
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
       padding: 1.5rem;
       width: 100%;
       max-width: 360px;
     }
     .status-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 0.5px solid rgba(0,0,0,0.08);
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 0.5px solid rgba(255,255,255,0.07);
     }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #f59e0b;
-      flex-shrink: 0;
-    }
-    .dot.connected { background: #16a34a; }
-    .status-text {
-      font-size: 13px;
-      color: #6b6b6b;
-      flex: 1;
-    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #6b7f5e; flex-shrink: 0; }
+    .dot.connected { background: #7eba80; }
+    .status-text { font-size: 13px; color: #8aaa80; flex: 1; }
     .btn-connect {
-      font-size: 13px;
-      font-weight: 500;
-      padding: 6px 14px;
-      border-radius: 8px;
-      border: 0.5px solid rgba(0,0,0,0.2);
-      background: #fff;
-      color: #1a1a1a;
-      cursor: pointer;
+      font-size: 13px; font-weight: 500; padding: 6px 14px;
+      border-radius: 8px; border: 0.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: #c8d9c0; cursor: pointer;
     }
-    .btn-connect:hover { background: #f5f5f0; }
-    .btn-connect:disabled { opacity: 0.4; cursor: default; }
-    .controls {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .btn-connect:hover { background: rgba(255,255,255,0.1); }
+    .btn-connect:disabled { opacity: 0.35; cursor: default; }
+    .controls { display: none; flex-direction: column; gap: 10px; }
     .btn-cmd {
-      width: 100%;
-      padding: 18px;
-      font-size: 15px;
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      letter-spacing: -0.1px;
+      width: 100%; padding: 20px;
+      font-size: 15px; font-weight: 500;
+      border-radius: 10px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
       transition: opacity 0.1s, transform 0.1s;
+      letter-spacing: -0.1px;
     }
     .btn-cmd:active { opacity: 0.75; transform: scale(0.98); }
     .btn-cmd i { font-size: 18px; }
-    .btn-lower {
-      background: #fff;
-      color: #1a1a1a;
-      border: 0.5px solid rgba(0,0,0,0.12);
-    }
-    .btn-stop {
-      background: #f5f5f0;
-      color: #1a1a1a;
-      border: 0.5px solid rgba(0,0,0,0.08);
-    }
-    .btn-raise {
-      background: #1a1a1a;
-      color: #fff;
-      border: none;
-    }
-    .last-cmd {
-      font-size: 12px;
-      color: #aaa;
-      text-align: center;
-      margin-top: 0.75rem;
-      min-height: 16px;
-    }
+    .btn-raise { background: #6b8f5e; color: #f2f5f0; border: none; }
+    .btn-stop  { background: rgba(255,255,255,0.06); color: #c8d9c0; border: 0.5px solid rgba(255,255,255,0.1); }
+    .btn-lower { background: rgba(255,255,255,0.03); color: #8aaa80; border: 0.5px solid rgba(255,255,255,0.07); }
+    .last-cmd  { font-size: 12px; color: #5a7a50; text-align: center; margin-top: 0.75rem; min-height: 16px; }
   </style>
 </head>
 <body>
   <div class="header">
+    <div class="header-icon">
+      <i class="ti ti-star-filled" aria-hidden="true"></i>
+    </div>
     <h1>Annah Arias</h1>
-    <p>Backdrop controller</p>
+    <div class="header-divider">
+      <span></span>
+      <p class="header-sub">Backdrop</p>
+      <span></span>
+    </div>
   </div>
 
   <div class="card">
@@ -132,14 +100,14 @@
     </div>
 
     <div class="controls" id="controls">
-      <button class="btn-cmd btn-lower" onpointerdown="send(1)">
-        <i class="ti ti-arrow-down"></i> Lower backdrop
+      <button class="btn-cmd btn-raise" onpointerdown="send(-1)">
+        <i class="ti ti-arrow-up" aria-hidden="true"></i> Raise backdrop
       </button>
       <button class="btn-cmd btn-stop" onpointerdown="send(0)">
-        <i class="ti ti-player-stop"></i> Stop
+        <i class="ti ti-player-stop" aria-hidden="true"></i> Stop
       </button>
-      <button class="btn-cmd btn-raise" onpointerdown="send(-1)">
-        <i class="ti ti-arrow-up"></i> Raise backdrop
+      <button class="btn-cmd btn-lower" onpointerdown="send(1)">
+        <i class="ti ti-arrow-down" aria-hidden="true"></i> Lower backdrop
       </button>
     </div>
 
@@ -166,7 +134,7 @@
         setStatus("Connected", true);
         document.getElementById("connect").disabled = true;
         document.getElementById("controls").style.display = "flex";
-      } catch (e) {
+      } catch(e) {
         setStatus("Failed: " + e.message, false);
       }
     });
@@ -182,12 +150,11 @@
     async function send(dir) {
       if (!characteristic) return;
       const labels = { "-1": "Raising", "0": "Stopped", "1": "Lowering" };
-      const msg   = `${dir},100`;
-      const bytes = new TextEncoder().encode(msg);
+      const bytes = new TextEncoder().encode(`${dir},100`);
       try {
         await characteristic.writeValueWithoutResponse(bytes);
         document.getElementById("last").textContent = labels[dir] + " backdrop";
-      } catch (e) {
+      } catch(e) {
         setStatus("Send failed: " + e.message, false);
       }
     }
